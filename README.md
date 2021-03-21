@@ -1,1 +1,1 @@
-# tseting lvgl with stm32h7
+# testing lvgl with stm32h7

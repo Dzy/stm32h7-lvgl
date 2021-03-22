@@ -137,14 +137,14 @@ int main(void)
   //lv_example_flex_4();
   //lv_example_scroll_3();
   //lv_example_img_2();
-  lv_example_style_2();
+  //lv_example_style_2();
   //lv_example_canvas_1();
   //lv_example_calendar_1();
   //lv_example_keyboard_1();
   //lv_example_spinbox_1();
   //lv_example_obj_1();
   //lv_example_msgbox_1();
-  //lv_example_meter_2();
+  lv_example_meter_2();
   //lv_example_dropdown_1();
   //lv_example_chart_1();
 
@@ -196,6 +196,10 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
+
+    // PLL1 source is HSE is 8MHz oscillator, 8000000Hz / PLLM x PLLN / PLLP
+    //                                        8000000Hz /    1 x  120 /    2 -> 480000000Hz (DIVP1 output to PLLCLK)
+
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
@@ -214,9 +218,7 @@ void SystemClock_Config(void)
   }
   /** Initializes the CPU, AHB and APB buses clocks
   */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2
-                              |RCC_CLOCKTYPE_D3PCLK1|RCC_CLOCKTYPE_D1PCLK1;
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK|RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2|RCC_CLOCKTYPE_D3PCLK1|RCC_CLOCKTYPE_D1PCLK1;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.SYSCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_HCLK_DIV2;
@@ -224,13 +226,16 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.APB1CLKDivider = RCC_APB1_DIV2;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_APB2_DIV2;
   RCC_ClkInitStruct.APB4CLKDivider = RCC_APB4_DIV2;
-
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK)
   {
     Error_Handler();
   }
-  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_LTDC|RCC_PERIPHCLK_USB
-                              |RCC_PERIPHCLK_FMC;
+
+    // PLL3 source is HSE is 8MHz oscillator, 8000000Hz / PLLM x PLLN / PLLP
+    //                                        8000000Hz /    1 x   20 /    4 -> 40000000Hz (DIVR3 output to LTDC)
+    // USBCLK is RCC_USBCLKSOURCE_PLL (PLL1 DIVQ1 output)
+
+  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_LTDC|RCC_PERIPHCLK_USB|RCC_PERIPHCLK_FMC;
   PeriphClkInitStruct.PLL3.PLL3M = 1;
   PeriphClkInitStruct.PLL3.PLL3N = 20; //5;
   PeriphClkInitStruct.PLL3.PLL3P = 2;
